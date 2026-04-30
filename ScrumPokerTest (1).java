@@ -37,10 +37,8 @@ public class ScrumPokerTest extends BaseTest {
     void ct01_EntrarNaSessaoComNomeValido() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        // 1. Acessar a URL de join fornecida pelo professor
         driver.get(JOIN_URL);
 
-        // 2. Aguardar o campo de nome e preencher
         WebElement campoNome = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.cssSelector("input[type='text'], input[placeholder*='name'], input[id*='name']")
@@ -49,7 +47,6 @@ public class ScrumPokerTest extends BaseTest {
         campoNome.clear();
         campoNome.sendKeys("TestadorCP3");
 
-        // 3. Clicar no botão de confirmar
         WebElement btnEntrar = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.cssSelector("button[type='submit'], button.btn-primary, input[type='submit']")
@@ -57,7 +54,6 @@ public class ScrumPokerTest extends BaseTest {
         );
         btnEntrar.click();
 
-        // 4. Aguardar a entrada na sala
         wait.until(ExpectedConditions.or(
                 ExpectedConditions.urlContains("/session/"),
                 ExpectedConditions.urlContains("/room/"),
@@ -66,7 +62,6 @@ public class ScrumPokerTest extends BaseTest {
                 )
         ));
 
-        // 5. Verificar que saiu da tela de join
         String urlAtual = driver.getCurrentUrl();
         assertFalse(
                 urlAtual.contains("/join/"),
@@ -91,14 +86,12 @@ public class ScrumPokerTest extends BaseTest {
 
         driver.get(JOIN_URL);
 
-        // Aguarda o campo aparecer, mas NÃO preenche
         wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.cssSelector("input[type='text'], input[placeholder*='name'], input[id*='name']")
                 )
         );
 
-        // Tenta confirmar com campo vazio
         WebElement btnEntrar = wait.until(
                 ExpectedConditions.elementToBeClickable(
                         By.cssSelector("button[type='submit'], button.btn-primary, input[type='submit']")
@@ -137,7 +130,6 @@ public class ScrumPokerTest extends BaseTest {
     void ct03_AcessarSessaoInexistente() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        // URL com ID e token completamente inventados
         String urlInvalida = BASE_URL + "/join/999999999?token=tokeninvalido00000000000000000000";
         driver.get(urlInvalida);
 
@@ -182,7 +174,6 @@ public class ScrumPokerTest extends BaseTest {
         driver.get(BASE_URL);
         wait.until(ExpectedConditions.jsReturnsValue("return document.readyState === 'complete';"));
 
-        // 1. Verificar que o título contém o nome do produto
         String titulo = driver.getTitle().toLowerCase();
         assertFalse(
                 titulo.isEmpty(),
@@ -193,14 +184,12 @@ public class ScrumPokerTest extends BaseTest {
                 "CT04 FALHOU – Título inesperado. Esperava 'scrum' ou 'poker', obteve: '" + titulo + "'"
         );
 
-        // 2. Verificar que há elementos de navegação na página (links/botões)
         List<WebElement> elementos = driver.findElements(By.cssSelector("a, button"));
         assertFalse(
                 elementos.isEmpty(),
                 "CT04 FALHOU – Nenhum link ou botão na página principal; site pode estar offline."
         );
 
-        // 3. Verificar que a URL final não é uma página de erro
         String urlFinal = driver.getCurrentUrl();
         assertFalse(
                 urlFinal.contains("error") || urlFinal.contains("404") || urlFinal.contains("offline"),
